@@ -1,0 +1,25 @@
+﻿Use more accurate integration algorithm
+
+Ship
+	Ship Flight Computer:
+		Communicates with command center over ShipCommunicationProtocol
+		Carries out commands, such as "exert x joules of impulse in y direction"
+			Determines how to best carry out command. Which direction will get the most thrusters inline?
+
+Create ShipCommunicationProtocol
+	Each ship is given a reference to this, which is passed to a ShipFlightComputer class
+		Allows ShipFlightComputers to communicate with SpaceTrafficControl
+
+Create SpaceTrafficControl
+	Uses ShipCommunicationProtocol to broadcast commands to ShipFlightComputer's, which then control their ships accordingly
+
+Create OrbitPredictor
+	Can look into the future to compare the position of 2 bodies at a given time. Has margin of error which increases as time goes on (to simulate observational error)
+
+Allow Sim.cs to simulate orbits
+
+Randomly spawn asteroids into random orbits
+
+Figure out how to create 3d view
+	Unreal engine & communicate over socket?
+	Website & communicate over websocket?
