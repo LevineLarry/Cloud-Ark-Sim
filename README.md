@@ -10,3 +10,6 @@ of inertia when manuvering. Manuvering of the ships uses a PID controller to all
 Each ship is assumed to be cylindrical, with 2 "Thruster Rings", one at the front and one at the back. A thruster ring is a ring of 4 "Thruster Quads", located on the outside of the ship 90 degrees apart from each other. Each thruster quad has 4 thrusters oriented 90 degrees apart (fore, port, aft, starbord), with all 4 sharing the same fuel & oxidizer tanks.
 
 Ships also have a ShipFlightComputer, which is actually controlls the ships functions.
+
+## Visualization
+I am planning to have this program communicate with Unreal Engine via a socket connection to send it the state of the simulation, which can then be visualized.
