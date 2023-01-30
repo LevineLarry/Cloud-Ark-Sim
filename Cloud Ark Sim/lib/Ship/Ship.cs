@@ -62,6 +62,7 @@ namespace Cloud_Ark_Sim.lib.Ship
             PropellantMixture propMixture = new(1 / 2.05, PropellantTypes.propellants["Aerozine50"], PropellantTypes.propellants["NitrogenTetroxide"]);
             ThrusterConfiguration config = new(281, 445, fuelTankBlueprint, oxidizerTankBlueprint, propMixture);
 
+            //https://www.enginehistory.org/Rockets/RPE09.45/RPE09.45.shtml
             foreRing = new ThrusterRing(_length/2, config, _diam, 0);
             aftRing = new ThrusterRing(-_length/2, config, _diam, 0);
 
