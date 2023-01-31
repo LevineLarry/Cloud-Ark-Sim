@@ -12,11 +12,11 @@ namespace Cloud_Ark_Sim
     {
         static void Main(string[] args)
         {
-            Sim.Init(0.01);
+            Sim.Init(0.1);
             SocketServer.Start();
             StateVector sv1 = new();
-            sv1.position = new Vect3D((double)Sim.GetEarthRadius() + 1000000, 0, 0);
-            sv1.velocity = new Vect3D();
+            sv1.position = new Vect3D(Sim.GetEarthRadius() + 408000, 0, 0);
+            sv1.velocity = new Vect3D(0, 7000, 0);
             sv1.acceleration = new Vect3D();
             Ship ship = new(9, 27, sv1);
             ship.GetFlightComputer().OrientTo(new EulerOrientation2D(-Math.PI/4, Math.PI/2));
@@ -38,7 +38,7 @@ namespace Cloud_Ark_Sim
                 pitch[i] = ship.GetOrientation().GetPitch() * (180 / Math.PI);
                 time[i] = t;
 
-                SocketServer.
+                SocketServer.wssv.WebSocketServices["/Data"].Sessions.Broadcast(t + ";" + ship.GetStateVector().position.GetX() + ";" + ship.GetStateVector().position.GetY() + ";" + ship.GetStateVector().position.GetZ());
 
                 Console.WriteLine(Math.Round(lib.SpaceUtils.EarthOrbit.GetAltitude(ship.GetStateVector().position),2) + " " + Math.Round(ship.GetStateVector().velocity.Magnitude(), 2) + " " + Math.Round(ship.GetStateVector().acceleration.Magnitude(), 2));
 

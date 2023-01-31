@@ -9,8 +9,8 @@ namespace Cloud_Ark_Sim.lib
     class Sim
     {
         private static double timestep; //The simulation timestep in seconds
-        private static decimal earthMass = 5.97e21m;
-        private static double earthRadius = 6378100;
+        private static double earthMass = 5_970_000_000_000_000_000_000_000d;
+        private static double earthRadius = 6_378_100d;
 
         public static void Init(double _timestep)
         {
@@ -22,7 +22,7 @@ namespace Cloud_Ark_Sim.lib
             return timestep;
         }
 
-        public static decimal GetEarthMass()
+        public static double GetEarthMass()
         {
             return earthMass;
         }

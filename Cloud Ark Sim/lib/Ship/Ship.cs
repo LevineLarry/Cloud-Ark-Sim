@@ -84,7 +84,7 @@ namespace Cloud_Ark_Sim.lib.Ship
             );
 
             Vect3D oldAcceleration = new(stateVector.acceleration);
-            stateVector.acceleration = new(SpaceUtils.EarthOrbit.GetAccelerationVector(stateVector.position, mass));
+            stateVector.acceleration = new(SpaceUtils.EarthOrbit.GetAccelerationVector(stateVector.position));
             stateVector.velocity.Apply(
                 0.5 * (stateVector.acceleration.GetX() + oldAcceleration.GetX()) * Sim.GetTimestep(),
                 0.5 * (stateVector.acceleration.GetY() + oldAcceleration.GetY()) * Sim.GetTimestep(),
