@@ -1,5 +1,9 @@
 ﻿Use more accurate integration algorithm
 
+Allow Sim.cs to simulate orbits
+
+Ship translational burns
+
 Ship
 	Ship Flight Computer:
 		Communicates with command center over ShipCommunicationProtocol
@@ -16,10 +20,4 @@ Create SpaceTrafficControl
 Create OrbitPredictor
 	Can look into the future to compare the position of 2 bodies at a given time. Has margin of error which increases as time goes on (to simulate observational error)
 
-Allow Sim.cs to simulate orbits
-
 Randomly spawn asteroids into random orbits
-
-Figure out how to create 3d view
-	Unreal engine & communicate over socket?
-	Website & communicate over websocket?

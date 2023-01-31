@@ -13,10 +13,6 @@ namespace Cloud_Ark_Sim.lib.Ship
     //TODO: Implement RollTo, PitchTo, and YawTo
     class Ship : Steppable
     {
-        //Has multiple thrusters (2 rings of 4 quads of thrusters)
-        //No reaction wheel
-        //Orient
-        //Get orientation
         //Burn (time, throttle setting)
         //Get state
         //Get fuel state
@@ -35,6 +31,8 @@ namespace Cloud_Ark_Sim.lib.Ship
         private EulerOrientation2D angularVelocity;
         private EulerOrientation2D angularAcceleration;
 
+        private StateVector stateVector;
+
         private double mass;
         private double diameter;
         private double length;
@@ -45,7 +43,7 @@ namespace Cloud_Ark_Sim.lib.Ship
         private ThrusterRing foreRing;
         private ThrusterRing aftRing;
         private ShipFlightComputer flightComputer;
-        public Ship(double _diam, double _length)
+        public Ship(double _diam, double _length, StateVector initialConditions)
         {
             PropellantTypes.Init();
 
@@ -54,6 +52,7 @@ namespace Cloud_Ark_Sim.lib.Ship
             orientation = new();
             angularVelocity = new();
             angularAcceleration = new();
+            stateVector = new(initialConditions);
 
             //These PropellantTank objects are copied for each ThrusterQuad, so they are just reffered to as blueprints
             PropellantTank oxidizerTankBlueprint = new(88, TankTypes.OXIDIZER, propellantTankEmptyMass);
@@ -76,15 +75,25 @@ namespace Cloud_Ark_Sim.lib.Ship
 
             flightComputer.Step();
             mass = GetTotalFuel() + GetTotalOxidizer() + (propellantTankEmptyMass * numPropellantTanks); //Update ships mass
+
+            //Apply linear kinematics
+            stateVector.position.Apply(
+                (stateVector.velocity.GetX() * Sim.GetTimestep()) + (0.5 * stateVector.velocity.GetX() * Math.Pow(Sim.GetTimestep(), 2)),
+                (stateVector.velocity.GetY() * Sim.GetTimestep()) + (0.5 * stateVector.velocity.GetY() * Math.Pow(Sim.GetTimestep(), 2)),
+                (stateVector.velocity.GetZ() * Sim.GetTimestep()) + (0.5 * stateVector.velocity.GetZ() * Math.Pow(Sim.GetTimestep(), 2))
+            );
+
+            Vect3D oldAcceleration = new(stateVector.acceleration);
+            stateVector.acceleration = new(SpaceUtils.EarthOrbit.GetAccelerationVector(stateVector.position, mass));
+            stateVector.velocity.Apply(
+                0.5 * (stateVector.acceleration.GetX() + oldAcceleration.GetX()) * Sim.GetTimestep(),
+                0.5 * (stateVector.acceleration.GetY() + oldAcceleration.GetY()) * Sim.GetTimestep(),
+                0.5 * (stateVector.acceleration.GetZ() + oldAcceleration.GetZ()) * Sim.GetTimestep()
+            );
+
+            //Apply rotational kinematics
             double mi_long = 0.5 * mass * Math.Pow((diameter / 2), 2); //Moment of inertia about ship long axis (roll)
             double mi_short = (1 / 12.0) * mass * ((3 * Math.Pow((diameter / 2), 2)) + Math.Pow(length, 2)); //Moment of inertia about ship short axes (yaw & pitch)
-
-            /*
-            orientation.Apply((angularVelocity.GetRoll() * Sim.GetTimestep()) + (0.5 * angularAcceleration.GetRoll() * Math.Pow(Sim.GetTimestep(), 2)), 0, 0);
-            EulerOrientation oldAngularAcceleration = new(angularAcceleration);
-            angularAcceleration = new(GetRollTorque() / momInertia, 0, 0); //Get angular acceleration (rad/s^2)
-            angularVelocity.Apply(0.5 * (angularAcceleration.GetRoll() + oldAngularAcceleration.GetRoll()) * Sim.GetTimestep(), 0, 0);
-            */
 
             orientation.Apply(
                 (angularVelocity.GetPitch() * Sim.GetTimestep()) + (0.5 * angularAcceleration.GetPitch() * Math.Pow(Sim.GetTimestep(), 2)), 
@@ -194,6 +203,11 @@ namespace Cloud_Ark_Sim.lib.Ship
         public ShipFlightComputer GetFlightComputer()
         {
             return flightComputer;
+        }
+
+        public StateVector GetStateVector()
+        {
+            return stateVector;
         }
     }
 }

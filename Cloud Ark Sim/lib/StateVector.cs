@@ -6,8 +6,24 @@ using System.Threading.Tasks;
 
 namespace Cloud_Ark_Sim.lib
 {
-    //Stores position & velocity
     class StateVector
     {
+        public Vect3D velocity;
+        public Vect3D position;
+        public Vect3D acceleration;
+
+        public StateVector()
+        {
+            velocity = new();
+            position = new();
+            acceleration = new();
+        }
+
+        public StateVector(StateVector other)
+        {
+            velocity = new(other.velocity);
+            position = new(other.position);
+            acceleration = new(other.acceleration);
+        }
     }
 }
